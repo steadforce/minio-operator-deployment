@@ -1,0 +1,24 @@
+operator:
+  operator:
+    affinity:
+      podAntiAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution: []
+    env:
+    # don't turn off operator-tls due to 
+    # https://github.com/minio/operator/issues/749
+    #- name: MINIO_OPERATOR_TLS_ENABLE
+    #  value: "off"
+    - name: CLUSTER_DOMAIN
+      value: "cluster.local"
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 0m
+        memory: 0Mi
+        ephemeral-storage: 0Mi
+  console:
+    resources: 
+      requests:
+        cpu: 0m
+        memory: 0Mi
+        ephemeral-storage: 0Mi
