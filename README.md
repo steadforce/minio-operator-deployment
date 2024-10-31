@@ -33,7 +33,7 @@ The following command renders the charts like argo-cd does to validate the conte
   --skip-tests \
   -a autoscaling.k8s.io/v1 \
   -f values-local.yaml \
-  --output-dir _local . 
+  --output-dir _render/local . 
 ```
 
 ### dev
@@ -45,7 +45,7 @@ The following command renders the charts like argo-cd does to validate the conte
   --skip-tests \
   -a autoscaling.k8s.io/v1 \
   -f values-development.yaml \
-  --output-dir _dev . 
+  --output-dir _render/dev . 
 ```
 
 ### prod
@@ -57,7 +57,7 @@ The following command renders the charts like argo-cd does to validate the conte
   --skip-tests \
   -a autoscaling.k8s.io/v1 \
   -f values-production.yaml \
-  --output-dir _prod . 
+  --output-dir _render/prod . 
 ```
 
 You can use this command to check if the output is as you expect. The `-a` parameters are needed since we use the
