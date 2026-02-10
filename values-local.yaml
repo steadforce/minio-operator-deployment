@@ -12,12 +12,16 @@ operator:
       value: "cluster.local"
     replicaCount: 1
     resources:
+      limits:
+        cpu: 0m
       requests:
         cpu: 0m
         memory: 0Mi
         ephemeral-storage: 0Mi
   console:
     resources: 
+      limits:
+        cpu: 0m
       requests:
         cpu: 0m
         memory: 0Mi
