@@ -1,2 +1,5 @@
-/.project
-/_render/
+.project
+_render_output/
+tests/__snapshot__/
+/test-output.xml
+.debug/

@@ -1,0 +1,57 @@
+suite: test if the resource settings for console container in cluster is correct
+release:
+  name: operator
+templates:
+  - charts/operator/templates/console-deployment.yaml
+
+tests:
+  - it: snapshot test for detecting side effects on console-deployment during development on local
+    asserts:
+    - matchSnapshot: {}
+    values: &localValues
+    - ../values-subchart-overrides.yaml
+    - ../values-local.yaml
+  - it: snapshot test for detecting side effects on console-deployment during development on dev
+    asserts:
+    - matchSnapshot: {}
+    values: &devValues
+    - ../values-subchart-overrides.yaml
+    - ../values-development.yaml
+  - it: snapshot test for detecting side effects on console-deployment during local development on prod
+    asserts:
+    - matchSnapshot: {}
+    values: &prodValues
+    - ../values-subchart-overrides.yaml
+    - ../values-production.yaml
+    
+  - it: console container resources for local cluster
+    values: *localValues
+    asserts:
+    - matchRegex:
+        path: &cpuLimitsPath spec.template.spec.containers[?(@.name == "operator")].resources.limits.cpu
+        # on local cluster we expect 0 or 0m cpu limits
+        pattern: &localCpuPattern "^0(m)?$"
+    - matchRegex:
+        path: &requestsCpuPath spec.template.spec.containers[?(@.name == "operator")].resources.requests.cpu
+        # on local cluster we expect 0 or 0m cpu requests
+        pattern: *localCpuPattern
+    - matchRegex:
+        path: &requestsMemoryPath spec.template.spec.containers[?(@.name == "operator")].resources.requests.memory
+        # on local cluster we expect 0 or 0Mi 0Gi memory requests
+        pattern: "^0(Ki|Mi|Gi)?$"
+    - matchRegex:
+        path: &requestsEphemeralStoragePath spec.template.spec.containers[?(@.name == "operator")].resources.requests.ephemeral-storage
+        # on local cluster we expect 0 or 0Mi 0Gi ephemeral storage requests
+        pattern: "^0(Ki|Mi|Gi)?$"
+
+  - it: console container resources for dev-cloud01 cluster
+    values: *devValues
+    asserts: &nonLocalResourcesAsserts
+    - matchRegex:
+        path: *requestsMemoryPath
+        # on non local cluster we expect non 0 memory requests
+        pattern: "^[1-9][0-9]*(Ki|Mi|Gi)?$"
+
+  - it: console container resources for prod-cloud01 cluster
+    values: *prodValues
+    asserts: *nonLocalResourcesAsserts
